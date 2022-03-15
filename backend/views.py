@@ -255,9 +255,9 @@ def submit(request):
     session_name = request.GET.get('session_name')
     session = LSCSession(session_name)
     imageid = request.GET.get('imageid')
-    time = request.GET.get('time')
     correctness = session.add_submission(imageid)
-    return jsonize({"description": correctness})
+    msg = "Submission correct!" if correctness else "Submission incorrect!"
+    return jsonize({"data":{"status":"success", "description": msg}})
 
 @csrf_exempt
 def get_score(request):
