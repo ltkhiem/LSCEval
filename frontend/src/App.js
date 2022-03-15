@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import './App.css';
+import appConfig from './config.json'
+import Button from 'react-bootstrap/Button';
 
 const FIXED_TIME = 60;
 
@@ -16,8 +18,14 @@ const App = () => {
         setSessionId(event.target.value);
     }
 
+
+    const handleFinishQuery = (event) => {
+	    setTime(0)
+    }
+
+
     const handleSubmit = (event) => {
-        const response = axios.get('http://duy-be.computing.dcu.ie/?session_name=' + sessionId,
+        const response = axios.get(appConfig['evalserver_url'] + '?session_name=' + sessionId,
             {
                 headers: { 'Content-Type': 'text/plain' }
             }
@@ -38,7 +46,7 @@ const App = () => {
             if (time > 0) {
                 setTime(time - 1);
                 if (query !== "The End." && query !== "Waiting to start."){
-                    const response = axios.get('http://duy-be.computing.dcu.ie/get_score?session_name=' + sessionId + "&time=" + time,
+                    const response = axios.get(appConfig['evalserver_url'] + 'get_score?session_name=' + sessionId + "&time=" + time,
                         {
                             headers: { 'Content-Type': 'text/plain' }
                         }
@@ -51,7 +59,7 @@ const App = () => {
             }
             if (time === 0) {
                 clearInterval(myInterval);
-                const response = axios.get('http://duy-be.computing.dcu.ie/next_clue?session_name=' + sessionId,
+                const response = axios.get(appConfig['evalserver_url'] + 'next_clue?session_name=' + sessionId,
                     {
                         headers: { 'Content-Type': 'text/plain' }
                     }
@@ -97,6 +105,7 @@ const App = () => {
                 <p className="text">
                     Total: {totalScore}
                 </p>
+	    <Button onClick={handleFinishQuery} variant="success">Finish</Button>
             </header>
         </div>
     );
