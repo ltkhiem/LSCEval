@@ -6,18 +6,18 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 client = MongoClient()
-db = client.lsc.session
+db = client.lsceval.session
 # db.drop()
 # db = client.lsc.session
-db2 = client.lsc.query
-db2.drop()
-db2 = client.lsc.query
+# db2 = client.lsceval.query
+# db2.drop()
+db2 = client.lsceval.query
 SECONDS_PER_CLUE = 60
 MAX_POINT = 100
 MAX_POINT_TASK_END = 50
 PENALTY_PER_WRONG = 10
-TEST_QUERIES = [73, 66, 62]
-EXP_QUERIES = [72, 64, 57, 63, 74]
+TEST_QUERIES = [11111, 22222]
+EXP_QUERIES = [100, 101]
 
 class Query():
     def __init__(self, idx, text=[], results=[]):
@@ -86,7 +86,7 @@ def get_all_queries(filename):
                 text = []
                 results = []
                 continue
-            if len(line) == 2:
+            if len(line) <= 5:
                 query_id = int(line)
             else:
                 if len(text) < 6:
@@ -97,10 +97,10 @@ def get_all_queries(filename):
         queries[query_id] = Query(query_id, text, results)
     return queries
 
-ALL_QUERIES = get_all_queries('backend/all_queries.txt')
+ALL_QUERIES = get_all_queries('backend/lsc21-queries-gt.txt')
 print(ALL_QUERIES.keys())
 
-# declare a new model with a name "GeeksModel" 
+
 class LSCSession():
     def __init__(self, name):
         self.name = name
