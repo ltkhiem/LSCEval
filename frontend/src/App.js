@@ -4,7 +4,7 @@ import './App.css';
 import appConfig from './config.json'
 import Button from 'react-bootstrap/Button';
 
-const FIXED_TIME = 60;
+const FIXED_TIME = 30;
 
 const App = () => {
     const [query, setQuery] = useState("Waiting to start.")
@@ -22,7 +22,6 @@ const App = () => {
     const handleFinishQuery = (event) => {
 	    setTime(0)
     }
-
 
     const handleSubmit = (event) => {
         const response = axios.get(appConfig['evalserver_url'] + '?session_name=' + sessionId,

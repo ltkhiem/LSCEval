@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "homepage":"http://lifefoster-ci.computing.dcu.ie/khiem/lsceval",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -15,7 +16,7 @@
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "PORT=5001 react-scripts start",
+    "start": "PORT=1235 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

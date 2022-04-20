@@ -12,12 +12,13 @@ db = client.lsceval.session
 # db2 = client.lsceval.query
 # db2.drop()
 db2 = client.lsceval.query
-SECONDS_PER_CLUE = 60
+SECONDS_PER_CLUE = 30
 MAX_POINT = 100
 MAX_POINT_TASK_END = 50
 PENALTY_PER_WRONG = 10
-TEST_QUERIES = [11111, 22222]
-EXP_QUERIES = [100, 101]
+TEST_QUERIES = [78, 90, 105, 91, 85]
+EXP_QUERIES = [100, 75, 79, 77, 98]
+MAX_QUESTIONS = 10
 
 class Query():
     def __init__(self, idx, text=[], results=[]):
@@ -109,32 +110,32 @@ class LSCSession():
             self.restore_from_dict(existed)
         else:
             self.time = 0
-            self.submissions = [[] for i in range(5)]
+            self.submissions = [[] for i in range(MAX_QUESTIONS)]
             self.id = None
             if "test" in name.lower():
                 self.query_ids = TEST_QUERIES
             else:
                 self.query_ids = EXP_QUERIES
             self.query_id = 0
-            self.scores = [0 for i in range(5)]
+            self.scores = [0 for i in range(MAX_QUESTIONS)]
             self.write_to_db()
 
     def reset(self):
         self.time = 0
-        self.submissions = [[] for i in range(5)]
+        self.submissions = [[] for i in range(MAX_QUESTIONS)]
         self.id = None
         if "test" in name.lower():
             self.query_ids = TEST_QUERIES
         else:
             self.query_ids = EXP_QUERIES
         self.query_id = 0
-        self.scores = [0 for i in range(5)]
+        self.scores = [0 for i in range(MAX_QUESTIONS)]
         self.write_to_db()
 
     def add_submission(self, imageid):
         current_query = self.get_current_query()
         correctness = current_query.eval(imageid)
-        self.submissions[self.query_id].append((imageid, correctness, (60 - self.time) + current_query.current * 60))
+        self.submissions[self.query_id].append((imageid, correctness, (SECONDS_PER_CLUE - self.time) + current_query.current * SECONDS_PER_CLUE))
         self.get_score()
         if correctness:
             self.get_current_query().finish_clue()
@@ -159,6 +160,10 @@ class LSCSession():
         return ALL_QUERIES[self.query_ids[self.query_id]]
     
     def get_current_score(self):
+        print('----------------------------------------------------------------------------------------------------')
+        print(self.scores)
+        print(self.query_id)
+        print('----------------------------------------------------------------------------------------------------')
         return round(self.scores[self.query_id], 2)
 
     def get_total_score(self):
@@ -257,7 +262,7 @@ def submit(request):
     imageid = request.GET.get('imageid')
     correctness = session.add_submission(imageid)
     msg = "Submission correct!" if correctness else "Submission incorrect!"
-    return jsonize({"data":{"status":"success", "description": msg}})
+    return jsonize({"status":"success", "description": msg})
 
 @csrf_exempt
 def get_score(request):
